@@ -1,42 +1,120 @@
-# CAP Bookshop - Training Example
+# SAP CAP Bookshop
 
-The Bookshop service built in the SAP CAP (Cloud Application Programming Model) getting-started session.
+A Bookshop application built using the **SAP Cloud Application Programming Model (CAP)** and **OData V4**. This project demonstrates data modeling with CDS, service projections, custom business logic, review management, and Python integration.
 
-## Project structure
+## Features
+
+- **Books and Authors:** CDS data model with associations between books and authors.
+- **Catalog Service:** Exposes Books, Authors, and Reviews through OData V4.
+- **Discount Logic:** Displays a discount label for books with stock greater than 100.
+- **Order Processing:** Custom `submitOrder` action that reduces stock when sufficient quantity is available.
+- **Review Management:** Supports submitting book reviews with ratings and comments.
+- **Rating Validation:** Rejects reviews with ratings outside the range of 1–5.
+- **Python Integration:** A Python script submits three reviews and calculates the average rating for each selected book.
+
+## Project Structure
 
 | Folder / File | Purpose |
 |---|---|
-| `db/schema.cds` | Domain model: `Books` and `Authors` |
-| `db/data/*.csv` | Sample data, loaded automatically on startup |
-| `srv/cat-service.cds` | `CatalogService` exposing Books, Authors and the `submitOrder` action |
-| `srv/cat-service.js` | Custom logic: discount label on Books and the `submitOrder` handler |
+| `db/schema.cds` | Defines Books, Authors, and Reviews entities and their relationships |
+| `db/data/*.csv` | Contains sample data loaded by CAP |
+| `srv/cat-service.cds` | Defines CatalogService and exposes Books, Authors, Reviews, and the `submitOrder` action |
+| `srv/cat-service.js` | Implements discount logic, order processing, and review rating validation |
+| `post_reviews.py` | Posts three reviews through OData and calculates average ratings |
 
 ## Prerequisites
 
-- Node.js 22 or 24 LTS
-- CAP development kit: `npm i -g @sap/cds-dk`
-- VS Code with the *SAP CDS Language Support* extension
+- Node.js (compatible LTS version)
+- npm
+- SAP CDS Language Support extension for VS Code (recommended)
+- Python 3
+- Python `requests` package
 
-## Run it
+## Getting Started
 
-```sh
-npm i
-cds watch
+Clone the repository:
+
+```bash
+git clone https://github.com/KirthigaManivannan/SAP-CAP-Bookshop.git
+cd SAP-CAP-Bookshop
 ```
 
-Then open:
+Install dependencies:
 
-- http://localhost:4004/odata/v4/catalog/Books
-- http://localhost:4004/odata/v4/catalog/Books?$filter=stock gt 100&$expand=author
-- http://localhost:4004/odata/v4/catalog/$metadata
+```bash
+npm install
+```
 
-## Homework
+Start the CAP development server:
 
-1. Add a `Reviews` entity (rating, comment) linked to `Books`.
-2. Add a `before('CREATE', 'Reviews')` handler that rejects ratings outside 1-5.
-3. Write a Python script that posts three reviews and prints the average rating per book.
+```bash
+npx cds watch
+```
 
-## Learn more
+The application should be available at:
 
-- CAP documentation: https://cap.cloud.sap
-- Sample code: https://github.com/SAP-samples/cloud-cap-samples
+`http://localhost:4004`
+
+## OData Endpoints
+
+| Endpoint | Description |
+|---|---|
+| `/odata/v4/catalog/Books` | Retrieve books |
+| `/odata/v4/catalog/Authors` | Retrieve authors |
+| `/odata/v4/catalog/Reviews` | Retrieve book reviews |
+| `/odata/v4/catalog/$metadata` | View OData service metadata |
+
+Example query to retrieve books with stock greater than 100 and their authors:
+
+```text
+http://localhost:4004/odata/v4/catalog/Books?$filter=stock gt 100&$expand=author
+```
+
+## Run the Python Review Script
+
+Make sure the CAP server is running in a separate terminal.
+
+Install the required Python package:
+
+```bash
+python -m pip install requests
+```
+
+Run the script from the project directory:
+
+```bash
+python post_reviews.py
+```
+
+The script selects two books, submits three reviews through the OData service, retrieves the reviews, and prints the average rating for each selected book.
+
+## Testing Rating Validation
+
+Reviews must have an integer rating between 1 and 5.
+
+- Ratings from 1 to 5 are accepted.
+- Ratings below 1, above 5, or non-integer ratings are rejected with an HTTP 400 response.
+  
+## Technologies Used
+
+- **SAP Cloud Application Programming Model (CAP)** – Application development framework
+- **CDS (Core Data Services)** – Data modeling and service definitions
+- **Node.js** – Backend runtime
+- **JavaScript** – Custom business logic and event handlers
+- **OData V4** – RESTful data access and service integration
+- **SQLite** – Development database
+- **Python** – Review submission and average rating calculation
+- **Python Requests** – HTTP requests to the OData service
+- **Visual Studio Code** – Development environment
+- **Git and GitHub** – Version control and source code hosting
+  
+## References
+
+- [SAP CAP Documentation](https://cap.cloud.sap/)
+- [SAP CAP Samples on GitHub](https://github.com/SAP-samples/cloud-cap-samples)
+- [SAP CDS Language Support for Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=SAPSE.vscode-cds)
+- [Node.js](https://nodejs.org/)
+- [Python Documentation](https://docs.python.org/3/)
+- [Requests Documentation](https://requests.readthedocs.io/en/latest/)
+- [Project Repository – SAP CAP Bookshop](https://github.com/KirthigaManivannan/SAP-CAP-Bookshop)
+
