@@ -1,3 +1,4 @@
+
 namespace my.bookshop;
 using { managed } from '@sap/cds/common';
 
@@ -13,4 +14,11 @@ entity Authors {
   key ID : Integer;
   name   : String(111);
   books  : Association to many Books on books.author = $self;
+}
+
+entity Reviews : managed {
+  key ID : Integer;
+  book    : Association to Books;
+  rating  : Integer;
+  comment : String(1000);
 }
